@@ -32,32 +32,30 @@ function initSupabaseAdmin() {
 // Export objects that call init functions when methods are accessed
 export const supabase = {
   auth: {
-    async signUp(...args: any[]) {
-      return initSupabase().auth.signUp(...args)
-    },
-    async signInWithPassword(...args: any[]) {
-      return initSupabase().auth.signInWithPassword(...args)
-    },
-    async signOut(...args: any[]) {
-      return initSupabase().auth.signOut(...args)
-    },
+    // @ts-ignore-next-line - spreading args with dynamic types
+    signUp: (...args: any[]) => initSupabase().auth.signUp(...args),
+    // @ts-ignore-next-line - spreading args with dynamic types
+    signInWithPassword: (...args: any[]) => initSupabase().auth.signInWithPassword(...args),
+    // @ts-ignore-next-line - spreading args with dynamic types
+    signOut: (...args: any[]) => initSupabase().auth.signOut(...args),
   },
+  // @ts-ignore-next-line - spreading args with dynamic types
   from: (...args: any[]) => initSupabase().from(...args),
+  // @ts-ignore-next-line - spreading args with dynamic types
   rpc: (...args: any[]) => initSupabase().rpc(...args),
 } as any
 
 export const supabaseAdmin = {
   auth: {
-    async signUp(...args: any[]) {
-      return initSupabaseAdmin().auth.signUp(...args)
-    },
-    async signInWithPassword(...args: any[]) {
-      return initSupabaseAdmin().auth.signInWithPassword(...args)
-    },
-    async signOut(...args: any[]) {
-      return initSupabaseAdmin().auth.signOut(...args)
-    },
+    // @ts-ignore-next-line - spreading args with dynamic types
+    signUp: (...args: any[]) => initSupabaseAdmin().auth.signUp(...args),
+    // @ts-ignore-next-line - spreading args with dynamic types
+    signInWithPassword: (...args: any[]) => initSupabaseAdmin().auth.signInWithPassword(...args),
+    // @ts-ignore-next-line - spreading args with dynamic types
+    signOut: (...args: any[]) => initSupabaseAdmin().auth.signOut(...args),
   },
+  // @ts-ignore-next-line - spreading args with dynamic types
   from: (...args: any[]) => initSupabaseAdmin().from(...args),
+  // @ts-ignore-next-line - spreading args with dynamic types
   rpc: (...args: any[]) => initSupabaseAdmin().rpc(...args),
 } as any
