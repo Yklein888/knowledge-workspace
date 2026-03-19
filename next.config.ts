@@ -4,8 +4,10 @@ const nextConfig: NextConfig = {
   // Production source maps disabled
   productionBrowserSourceMaps: false,
 
-  // Turbopack configuration with workaround for non-ASCII paths
-  turbopack: {},
+  // Use Webpack instead of Turbopack to handle Hebrew directory names
+  webpack: (config) => {
+    return config
+  },
 
   // Image optimization
   images: {
