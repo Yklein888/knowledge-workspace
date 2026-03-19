@@ -32,30 +32,51 @@ function initSupabaseAdmin() {
 // Export objects that call init functions when methods are accessed
 export const supabase = {
   auth: {
-    // @ts-ignore-next-line - spreading args with dynamic types
+    // @ts-ignore-next-line
     signUp: (...args: any[]) => initSupabase().auth.signUp(...args),
-    // @ts-ignore-next-line - spreading args with dynamic types
+    // @ts-ignore-next-line
     signInWithPassword: (...args: any[]) => initSupabase().auth.signInWithPassword(...args),
-    // @ts-ignore-next-line - spreading args with dynamic types
+    // @ts-ignore-next-line
+    signInWithOAuth: (...args: any[]) => initSupabase().auth.signInWithOAuth(...args),
+    // @ts-ignore-next-line
     signOut: (...args: any[]) => initSupabase().auth.signOut(...args),
+    // @ts-ignore-next-line
+    getUser: (...args: any[]) => initSupabase().auth.getUser(...args),
+    // @ts-ignore-next-line
+    getSession: (...args: any[]) => initSupabase().auth.getSession(...args),
+    // @ts-ignore-next-line
+    onAuthStateChange: (...args: any[]) => initSupabase().auth.onAuthStateChange(...args),
+    // @ts-ignore-next-line
+    resetPasswordForEmail: (...args: any[]) => initSupabase().auth.resetPasswordForEmail(...args),
+    // @ts-ignore-next-line
+    updateUser: (...args: any[]) => initSupabase().auth.updateUser(...args),
+    // @ts-ignore-next-line
+    exchangeCodeForSession: (...args: any[]) => initSupabase().auth.exchangeCodeForSession(...args),
   },
-  // @ts-ignore-next-line - spreading args with dynamic types
+  // @ts-ignore-next-line
   from: (...args: any[]) => initSupabase().from(...args),
-  // @ts-ignore-next-line - spreading args with dynamic types
+  // @ts-ignore-next-line
   rpc: (...args: any[]) => initSupabase().rpc(...args),
 } as any
 
 export const supabaseAdmin = {
   auth: {
-    // @ts-ignore-next-line - spreading args with dynamic types
-    signUp: (...args: any[]) => initSupabaseAdmin().auth.signUp(...args),
-    // @ts-ignore-next-line - spreading args with dynamic types
-    signInWithPassword: (...args: any[]) => initSupabaseAdmin().auth.signInWithPassword(...args),
-    // @ts-ignore-next-line - spreading args with dynamic types
-    signOut: (...args: any[]) => initSupabaseAdmin().auth.signOut(...args),
+    // @ts-ignore-next-line
+    admin: {
+      // @ts-ignore-next-line
+      createUser: (...args: any[]) => initSupabaseAdmin().auth.admin.createUser(...args),
+      // @ts-ignore-next-line
+      updateUserById: (...args: any[]) => initSupabaseAdmin().auth.admin.updateUserById(...args),
+      // @ts-ignore-next-line
+      deleteUser: (...args: any[]) => initSupabaseAdmin().auth.admin.deleteUser(...args),
+      // @ts-ignore-next-line
+      listUsers: (...args: any[]) => initSupabaseAdmin().auth.admin.listUsers(...args),
+    },
+    // @ts-ignore-next-line
+    getUser: (...args: any[]) => initSupabaseAdmin().auth.getUser(...args),
   },
-  // @ts-ignore-next-line - spreading args with dynamic types
+  // @ts-ignore-next-line
   from: (...args: any[]) => initSupabaseAdmin().from(...args),
-  // @ts-ignore-next-line - spreading args with dynamic types
+  // @ts-ignore-next-line
   rpc: (...args: any[]) => initSupabaseAdmin().rpc(...args),
 } as any
