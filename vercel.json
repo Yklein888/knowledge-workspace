@@ -6,6 +6,9 @@
   "projectSettings": {
     "nodeVersion": "20.x"
   },
+  "env": {
+    "NEXT_PRIVATE_SKIP_TURBOPACK_CHECK": "true"
+  },
   "headers": [
     {
       "source": "/(.*)",
