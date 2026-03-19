@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signUp } from '@/lib/auth'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -33,13 +32,19 @@ export default function SignupPage() {
     }
 
     try {
-      await signUp(email, password, name)
-      setSuccess(true)
+      // Use server-side API route that auto-confirms email (no email verification needed)
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to sign up')
 
-      // Redirect after short delay to show success message
+      setSuccess(true)
       setTimeout(() => {
         router.push('/login')
-      }, 2000)
+      }, 1500)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign up'
       setError(errorMessage)
