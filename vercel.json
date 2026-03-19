@@ -6,10 +6,6 @@
   "projectSettings": {
     "nodeVersion": "24.x"
   },
-  "env": {
-    "NEXT_PRIVATE_SKIP_TURBOPACK_CHECK": "true",
-    "TURBOPACK": "false"
-  },
   "headers": [
     {
       "source": "/(.*)",
