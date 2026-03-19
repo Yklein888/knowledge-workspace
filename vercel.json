@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "projectSettings": {
-    "nodeVersion": "20.x"
+    "nodeVersion": "24.x"
   },
   "env": {
     "NEXT_PRIVATE_SKIP_TURBOPACK_CHECK": "true"
