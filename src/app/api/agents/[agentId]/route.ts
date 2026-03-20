@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAgentById, updateAgent } from '@/lib/db-utils'
+import { getAgentById, updateAgent, deleteAgent } from '@/lib/db-utils'
 
 // GET /api/agents/[agentId] - Get single agent
 export async function GET(
@@ -116,8 +116,7 @@ export async function DELETE(
       )
     }
 
-    // TODO: Implement soft delete
-    // await deleteAgent(agentId)
+    await deleteAgent(agentId)
 
     return NextResponse.json({
       success: true,

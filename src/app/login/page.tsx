@@ -37,6 +37,7 @@ export default function LoginPage() {
     setError(null)
     try {
       await signInWithGoogle()
+      // Note: redirect happens via OAuth, googleLoading stays true intentionally
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to sign in with Google'
       setError(errorMessage)
@@ -63,13 +64,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-zinc-950 dark:to-zinc-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-2 text-zinc-900 dark:text-white">
-          Welcome Back
+    <div className="min-h-screen bg-[#191919] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[#1a1a1a] border border-white/5 rounded-2xl shadow-xl p-8">
+        <h1 className="text-3xl font-bold text-center mb-2 text-white">
+          Welcome back
         </h1>
-        <p className="text-center text-zinc-600 dark:text-zinc-400 mb-8">
-          Sign in to your workspace
+        <p className="text-center text-zinc-500 mb-8">
+          Sign in to AGENT
         </p>
 
         {error && (

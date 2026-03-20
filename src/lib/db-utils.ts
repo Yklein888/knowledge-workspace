@@ -112,12 +112,10 @@ export async function createLink(data: {
 
 export async function getLinksForPage(pageId: string) {
   const db = getDb()
-  const [page] = await db
+  return db
     .select()
-    .from(pages)
-    .where(eq(pages.id, pageId))
-    .limit(1)
-  return page || null
+    .from(links)
+    .where(eq(links.fromPageId, pageId))
 }
 
 export async function deleteLink(linkId: string) {
@@ -162,4 +160,9 @@ export async function updateAgent(
     .where(eq(agents.id, agentId))
     .returning()
   return agent
+}
+
+export async function deleteAgent(agentId: string) {
+  const db = getDb()
+  return db.delete(agents).where(eq(agents.id, agentId))
 }

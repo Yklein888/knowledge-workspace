@@ -1,5 +1,7 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import { getCurrentUser } from '@/lib/auth'
+import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
 export function useUser() {
@@ -7,19 +9,21 @@ export function useUser() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        const currentUser = await getCurrentUser()
-        setUser(currentUser)
-      } catch (err) {
-        // User not logged in
-        setUser(null)
-      } finally {
-        setLoading(false)
-      }
-    }
+    // Get initial session
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    supabase.auth.getUser().then((result: any) => {
+      setUser(result?.data?.user ?? null)
+      setLoading(false)
+    })
 
-    fetchUser()
+    // Subscribe to auth state changes
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: { subscription } } = (supabase.auth as any).onAuthStateChange((_event: any, session: any) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   return { user, loading }

@@ -29,7 +29,12 @@ function createDb() {
     throw new Error('DATABASE_URL environment variable is not set')
   }
 
-  const client = postgres(databaseUrl)
+  const client = postgres(databaseUrl, {
+    max: 5,
+    idle_timeout: 20,
+    connect_timeout: 10,
+    ssl: 'require',
+  })
   return drizzle(client, { schema })
 }
 

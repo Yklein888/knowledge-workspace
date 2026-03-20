@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { QueryProvider } from '@/components/providers/QueryProvider'
 
 export const metadata: Metadata = {
-  title: 'Knowledge Workspace',
-  description: 'Smart knowledge management and AI agent builder',
+  title: 'AGENT',
+  description: 'AI-powered knowledge workspace and agent builder',
 }
 
 export default function RootLayout({
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-zinc-50 dark:bg-zinc-950">{children}</body>
+      <body className="bg-zinc-950">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   )
 }
