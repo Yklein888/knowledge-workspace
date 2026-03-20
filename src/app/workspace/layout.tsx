@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import {
   Plus, FileText, Trash2, LogOut, Search, Settings,
@@ -10,6 +10,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useUser } from '@/hooks/useUser'
 import { signOut } from '@/lib/auth'
+import CommandPalette from '@/components/CommandPalette'
 
 interface Page {
   id: string
@@ -25,10 +26,23 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
   const pathname = usePathname()
   const queryClient = useQueryClient()
   const { user, loading: userLoading } = useUser()
+  const [cmdOpen, setCmdOpen] = useState(false)
 
   useEffect(() => {
     if (!userLoading && !user) router.push('/login')
   }, [user, userLoading, router])
+
+  // Cmd+K shortcut
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setCmdOpen((o) => !o)
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
 
   const { data: pages = [], isLoading: pagesLoading } = useQuery<Page[]>({
     queryKey: ['pages', user?.id],
@@ -120,15 +134,16 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
           <ChevronRight size={14} className="text-zinc-600" />
         </div>
 
-        {/* Search */}
+        {/* Search / Cmd+K */}
         <div className="px-2 pb-1">
-          <div className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors">
+          <button
+            onClick={() => setCmdOpen(true)}
+            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors text-left"
+          >
             <Search size={14} className="text-zinc-500" />
-            <input
-              placeholder="Search pages..."
-              className="bg-transparent text-sm text-zinc-400 placeholder-zinc-600 outline-none flex-1 w-full"
-            />
-          </div>
+            <span className="text-sm text-zinc-600 flex-1">Search pages...</span>
+            <kbd className="text-[10px] text-zinc-700 border border-white/10 rounded px-1">⌘K</kbd>
+          </button>
         </div>
 
         {/* Nav */}
@@ -145,25 +160,31 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <span>All Pages</span>
           </button>
           <button
-            disabled
-            title="Coming soon"
-            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-sm text-zinc-600 cursor-not-allowed opacity-50"
+            onClick={() => router.push('/workspace/agents')}
+            className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-sm transition-colors ${
+              pathname.startsWith('/workspace/agents')
+                ? 'bg-white/10 text-white'
+                : 'text-zinc-400 hover:bg-white/5 hover:text-white'
+            }`}
           >
             <Sparkles size={14} />
             <span>Agents</span>
           </button>
           <button
-            disabled
-            title="Coming soon"
-            className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-sm text-zinc-600 cursor-not-allowed opacity-50"
+            onClick={() => router.push('/workspace/settings')}
+            className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-md text-sm transition-colors ${
+              pathname === '/workspace/settings'
+                ? 'bg-white/10 text-white'
+                : 'text-zinc-400 hover:bg-white/5 hover:text-white'
+            }`}
           >
             <Settings size={14} />
             <span>Settings</span>
           </button>
         </div>
 
-        <div className="px-3 py-2 mt-2">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600 mb-1">Pages</p>
+        <div className="px-3 py-2 mt-2 flex items-center justify-between">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Pages</p>
         </div>
 
         {/* Pages list */}
@@ -230,6 +251,8 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
       <main className="flex-1 flex flex-col overflow-hidden">
         {children}
       </main>
+
+      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
     </div>
   )
 }
