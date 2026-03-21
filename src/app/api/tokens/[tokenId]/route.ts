@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { deleteApiToken } from '@/lib/db-utils'
+import { supabaseAdmin } from '@/lib/supabase'
 
 // DELETE /api/tokens/[tokenId] - Revoke an API token
 export async function DELETE(
@@ -11,7 +11,14 @@ export async function DELETE(
     if (!userId) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
 
     const { tokenId } = await params
-    await deleteApiToken(tokenId, userId)
+
+    const { error } = await supabaseAdmin
+      .from('api_tokens')
+      .delete()
+      .eq('id', tokenId)
+      .eq('user_id', userId)
+
+    if (error) throw error
 
     return NextResponse.json({ success: true })
   } catch (error) {
