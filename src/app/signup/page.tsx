@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { Sparkles, Loader2, Check } from 'lucide-react'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -16,23 +17,14 @@ export default function SignupPage() {
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
     setError(null)
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      setLoading(false)
-      return
-    }
+    if (!name.trim()) { setError('Name is required'); return }
+    if (password !== confirmPassword) { setError('Passwords do not match'); return }
+    if (password.length < 6) { setError('Password must be at least 6 characters'); return }
 
-    if (!name.trim()) {
-      setError('Name is required')
-      setLoading(false)
-      return
-    }
-
+    setLoading(true)
     try {
-      // Use server-side API route that auto-confirms email (no email verification needed)
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,116 +32,111 @@ export default function SignupPage() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to sign up')
-
       setSuccess(true)
-      setTimeout(() => {
-        router.push('/login')
-      }, 1500)
+      setTimeout(() => router.push('/login'), 1500)
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to sign up'
-      setError(errorMessage)
+      setError(err instanceof Error ? err.message : 'Failed to sign up')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-zinc-950 dark:to-zinc-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-2 text-zinc-900 dark:text-white">
-          Get Started
-        </h1>
-        <p className="text-center text-zinc-600 dark:text-zinc-400 mb-8">
-          Create your knowledge workspace
-        </p>
+    <div className="min-h-screen bg-[#0e0e0e] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-600/8 rounded-full blur-[100px] pointer-events-none" />
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg">
-            <p className="text-red-800 dark:text-red-200 text-sm">{error}</p>
+      <div className="relative w-full max-w-sm">
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
+              <Sparkles size={17} className="text-white" />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-white">AGENT</span>
           </div>
-        )}
+        </div>
 
-        {success && (
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
-            <p className="text-green-800 dark:text-green-200 text-sm">
-              Account created! Redirecting to login...
-            </p>
-          </div>
-        )}
+        {/* Card */}
+        <div className="bg-[#161616] border border-white/8 rounded-2xl p-8 shadow-2xl shadow-black/50">
+          <h1 className="text-2xl font-bold text-white mb-1">Create account</h1>
+          <p className="text-sm text-zinc-500 mb-7">Start your free workspace today</p>
 
-        <form onSubmit={handleSignup} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your name"
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400"
-              required
-            />
-          </div>
+          {error && (
+            <div className="mb-5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <p className="text-red-400 text-sm">{error}</p>
+            </div>
+          )}
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400"
-              required
-            />
-          </div>
+          {success && (
+            <div className="mb-5 px-4 py-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2">
+              <Check size={15} className="text-emerald-400 flex-shrink-0" />
+              <p className="text-emerald-400 text-sm">Account created! Redirecting...</p>
+            </div>
+          )}
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400"
-              required
-            />
-          </div>
+          <form onSubmit={handleSignup} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Full name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-600 outline-none focus:border-violet-500/50 focus:bg-white/8 transition"
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2 border border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400"
-              required
-            />
-          </div>
+            <div>
+              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-600 outline-none focus:border-violet-500/50 focus:bg-white/8 transition"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-          >
-            {loading ? 'Creating account...' : 'Sign Up'}
-          </button>
-        </form>
+            <div>
+              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-600 outline-none focus:border-violet-500/50 focus:bg-white/8 transition"
+                required
+              />
+            </div>
 
-        <div className="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-          <p className="text-center text-zinc-600 dark:text-zinc-400">
-            Already have an account?{' '}
-            <Link
-              href="/login"
-              className="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+            <div>
+              <label className="block text-xs font-medium text-zinc-400 mb-1.5">Confirm password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-600 outline-none focus:border-violet-500/50 focus:bg-white/8 transition"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || success}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-sm font-semibold transition shadow-lg shadow-violet-500/20 disabled:opacity-50 mt-1"
             >
+              {loading ? <Loader2 size={15} className="animate-spin" /> : null}
+              {loading ? 'Creating account...' : 'Create account'}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-zinc-600 mt-6">
+            Already have an account?{' '}
+            <Link href="/login" className="text-violet-400 hover:text-violet-300 font-medium transition">
               Sign in
             </Link>
           </p>
