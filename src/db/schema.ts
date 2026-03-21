@@ -81,6 +81,18 @@ export const agentExports = pgTable('agent_exports', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
+// API Tokens table
+export const apiTokens = pgTable('api_tokens', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull(),
+  name: text('name').notNull(),
+  token: text('token').notNull().unique(),
+  scopes: text('scopes').array().default([]),
+  lastUsedAt: timestamp('last_used_at'),
+  expiresAt: timestamp('expires_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
 // Audit logs
 export const auditLogs = pgTable('audit_logs', {
   id: uuid('id').primaryKey().defaultRandom(),

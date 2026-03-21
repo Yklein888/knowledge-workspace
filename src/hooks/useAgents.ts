@@ -19,6 +19,7 @@ export interface CreateAgentInput {
   name: string
   description?: string
   goal?: string
+  config?: Record<string, unknown>
 }
 
 export interface UpdateAgentInput {
@@ -26,6 +27,7 @@ export interface UpdateAgentInput {
   description?: string
   goal?: string
   isActive?: boolean
+  config?: Record<string, unknown>
 }
 
 export function useAgents() {

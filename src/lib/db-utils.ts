@@ -4,11 +4,13 @@ import {
   documents,
   links,
   agents,
+  apiTokens,
   eq,
   desc,
   and,
   asc,
 } from '@/db'
+import crypto from 'crypto'
 
 // Pages utilities
 export async function getPagesByUser(userId: string) {
@@ -165,4 +167,39 @@ export async function updateAgent(
 export async function deleteAgent(agentId: string) {
   const db = getDb()
   return db.delete(agents).where(eq(agents.id, agentId))
+}
+
+// API Tokens utilities
+export async function getTokensByUser(userId: string) {
+  const db = getDb()
+  return db
+    .select()
+    .from(apiTokens)
+    .where(eq(apiTokens.userId, userId))
+    .orderBy(desc(apiTokens.createdAt))
+}
+
+export async function getTokenByValue(token: string) {
+  const db = getDb()
+  const [t] = await db
+    .select()
+    .from(apiTokens)
+    .where(eq(apiTokens.token, token))
+    .limit(1)
+  return t || null
+}
+
+export async function createApiToken(data: { userId: string; name: string; scopes?: string[] }) {
+  const db = getDb()
+  const token = `agt_${crypto.randomBytes(32).toString('hex')}`
+  const [t] = await db
+    .insert(apiTokens)
+    .values({ userId: data.userId, name: data.name, token, scopes: data.scopes ?? [] })
+    .returning()
+  return t
+}
+
+export async function deleteApiToken(tokenId: string, userId: string) {
+  const db = getDb()
+  return db.delete(apiTokens).where(and(eq(apiTokens.id, tokenId), eq(apiTokens.userId, userId)))
 }
